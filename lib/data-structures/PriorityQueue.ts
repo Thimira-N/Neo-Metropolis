@@ -9,7 +9,7 @@ export interface PriorityQueueADT<T> {
 }
 
 
-export class PriorityQueue<T> {
+export class PriorityQueue<T> implements PriorityQueueADT<any>{
   private heap: Array<{ item: T; priority: number }> = [];
   private compare: (a: number, b: number) => number;
 
@@ -19,14 +19,14 @@ export class PriorityQueue<T> {
   }
 
 
-
+//add
   enqueue(item: T, priority: number): void {
     this.heap.push({ item, priority });
     this.siftUp(this.heap.length - 1);
   }
 
   
-
+//remove
   dequeue(): T | undefined {
     if (this.isEmpty()) return undefined;
     
@@ -42,13 +42,10 @@ export class PriorityQueue<T> {
   }
 
 
-  
   peek(): T | undefined {
     return this.isEmpty() ? undefined : this.heap[0].item;
   }
 
-
-  
 
   changePriority(predicate: (item: T) => boolean, newPriority: number): boolean {
     for (let i = 0; i < this.heap.length; i++) {
@@ -67,29 +64,21 @@ export class PriorityQueue<T> {
     return false;
   }
 
- 
-  
 
   isEmpty(): boolean {
     return this.heap.length === 0;
   }
 
 
-  
-
   size(): number {
     return this.heap.length;
   }
 
 
-  
-
   getAll(): T[] {
     return this.heap.map(item => item.item);
   }
 
-
-  
 
   private siftUp(index: number): void {
     let current = index;
@@ -104,8 +93,6 @@ export class PriorityQueue<T> {
       parent = Math.floor((current - 1) / 2);
     }
   }
-
-  
   
   private siftDown(index: number): void {
     let current = index;

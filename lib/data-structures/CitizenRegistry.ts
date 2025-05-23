@@ -15,6 +15,7 @@ export class CitizenRegistry implements CitizenRegistryADT {
   private emailIndex: Map<string, string> = new Map();
   private nameIndex: Map<string, Set<string>> = new Map();
 
+  //add citizen
   add(citizen: Citizen): boolean {
     if (this.emailIndex.has(citizen.email)) return false;
 
@@ -37,6 +38,7 @@ export class CitizenRegistry implements CitizenRegistryADT {
     return true;
   }
 
+  //update citizen
   update(id: string, updatedCitizen: Partial<Citizen>): boolean {
     if (!this.citizens.has(id)) return false;
 
@@ -81,6 +83,7 @@ export class CitizenRegistry implements CitizenRegistryADT {
     return true;
   }
 
+  //remove citizen
   remove(id: string): boolean {
     if (!this.citizens.has(id)) return false;
 
@@ -105,10 +108,12 @@ export class CitizenRegistry implements CitizenRegistryADT {
     return true;
   }
 
+  //search from id
   getById(id: string): Citizen | null {
     return this.citizens.get(id) ?? null;
   }
 
+  //search from name
   findByName(name: string): Citizen[] {
     const nameLower = name.toLowerCase();
     const matchedIds = new Set<string>();
@@ -122,10 +127,12 @@ export class CitizenRegistry implements CitizenRegistryADT {
     return Array.from(matchedIds).map(id => this.citizens.get(id)!);
   }
 
+  //display all added citizen
   getAll(): Citizen[] {
     return Array.from(this.citizens.values());
   }
 
+  //count of added citizen
   size(): number {
     return this.citizens.size;
   }
