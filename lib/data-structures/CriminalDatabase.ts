@@ -1,18 +1,25 @@
 import { Criminal } from "@/types";
 
-/**
- * Specialized database for efficient criminal record management
- * Optimized for fast lookups by various identifiers
- */
-export class CriminalDatabase {
+export interface CriminalDatabaseADT {
+  add(criminal: Criminal): boolean;
+  update(id: string, updatedCriminal: Partial<Criminal>): boolean;
+  remove(id: string): boolean;
+  getById(id: string): Criminal | undefined;
+  findByName(partialName: string): Criminal[];
+  findByThreatLevel(threatLevel: string): Criminal[];
+  findByStatus(status: string): Criminal[];
+  getAll(): Criminal[];
+  size(): number;
+}
+
+
+export class CriminalDatabase implements CriminalDatabaseADT {
   private criminals: Map<string, Criminal> = new Map();
   private nameIndex: Map<string, Set<string>> = new Map(); // partial name -> set of ids
   private threatLevelIndex: Map<string, Set<string>> = new Map(); // threatLevel -> set of ids
   private statusIndex: Map<string, Set<string>> = new Map(); // status -> set of ids
 
-  /**
-   * Add a criminal to the database
-   */
+
   add(criminal: Criminal): boolean {
     if (this.criminals.has(criminal.id)) {
       return false;
@@ -50,9 +57,8 @@ export class CriminalDatabase {
     return true;
   }
 
-  /**
-   * Update an existing criminal record
-   */
+
+
   update(id: string, updatedCriminal: Partial<Criminal>): boolean {
     if (!this.criminals.has(id)) {
       return false;
@@ -126,9 +132,8 @@ export class CriminalDatabase {
     return true;
   }
 
-  /**
-   * Remove a criminal from the database
-   */
+
+
   remove(id: string): boolean {
     if (!this.criminals.has(id)) {
       return false;
@@ -167,16 +172,13 @@ export class CriminalDatabase {
     return true;
   }
 
-  /**
-   * Get a criminal by ID
-   */
+
   getById(id: string): Criminal | undefined {
     return this.criminals.get(id);
   }
 
-  /**
-   * Find criminals by partial name match
-   */
+
+  
   findByName(name: string): Criminal[] {
     const nameLower = name.toLowerCase();
     const matchedIds = new Set<string>();
@@ -190,9 +192,8 @@ export class CriminalDatabase {
     return Array.from(matchedIds).map(id => this.criminals.get(id)!);
   }
 
-  /**
-   * Find criminals by threat level
-   */
+  
+
   findByThreatLevel(threatLevel: string): Criminal[] {
     if (!this.threatLevelIndex.has(threatLevel)) {
       return [];
@@ -201,9 +202,8 @@ export class CriminalDatabase {
     return Array.from(this.threatLevelIndex.get(threatLevel)!).map(id => this.criminals.get(id)!);
   }
 
-  /**
-   * Find criminals by status
-   */
+  
+
   findByStatus(status: string): Criminal[] {
     if (!this.statusIndex.has(status)) {
       return [];
@@ -212,16 +212,14 @@ export class CriminalDatabase {
     return Array.from(this.statusIndex.get(status)!).map(id => this.criminals.get(id)!);
   }
 
-  /**
-   * Get all criminals
-   */
+
+  
   getAll(): Criminal[] {
     return Array.from(this.criminals.values());
   }
 
-  /**
-   * Get criminal count
-   */
+
+  
   size(): number {
     return this.criminals.size;
   }
