@@ -1,0 +1,345 @@
+"use client"
+
+import { useState } from "react"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Label } from "@/components/ui/label"
+import { 
+  Search,
+  Filter,
+  UserPlus,
+  Download,
+  Upload
+} from "lucide-react"
+import { Citizen } from "@/types"
+import { CitizenRegistry } from "@/lib/data-structures/CitizenRegistry"
+
+// Sample citizens data
+const sampleCitizens: Citizen[] = [
+  {
+    id: "c1",
+    name: "Jane Cooper",
+    age: 32,
+    nationality: "United States",
+    dateOfBirth: "1990-05-15",
+    address: "123 Main St, Metropolis",
+    email: "jane.cooper@example.com",
+    phone: "555-1234",
+    createdAt: "2023-01-10T08:30:00Z",
+    updatedAt: "2023-04-18T14:15:00Z"
+  },
+  {
+    id: "c2",
+    name: "Wade Warren",
+    age: 45,
+    nationality: "Canada",
+    dateOfBirth: "1977-08-22",
+    address: "456 Oak Ave, Metropolis",
+    email: "wade.warren@example.com",
+    phone: "555-2345",
+    createdAt: "2023-02-05T10:15:00Z",
+    updatedAt: "2023-05-20T09:45:00Z"
+  },
+  {
+    id: "c3",
+    name: "Esther Howard",
+    age: 29,
+    nationality: "United Kingdom",
+    dateOfBirth: "1993-11-04",
+    address: "789 Pine St, Metropolis",
+    email: "esther.howard@example.com",
+    phone: "555-3456",
+    createdAt: "2023-03-12T15:45:00Z",
+    updatedAt: "2023-06-01T11:30:00Z"
+  },
+  {
+    id: "c4",
+    name: "Cameron Williamson",
+    age: 38,
+    nationality: "Australia",
+    dateOfBirth: "1984-07-10",
+    address: "101 Maple Rd, Metropolis",
+    email: "cameron.williamson@example.com",
+    phone: "555-4567",
+    createdAt: "2023-02-28T11:20:00Z", 
+    updatedAt: "2023-05-15T16:10:00Z"
+  },
+  {
+    id: "c5",
+    name: "Brooklyn Simmons",
+    age: 27,
+    nationality: "United States",
+    dateOfBirth: "1996-03-18",
+    address: "202 Cedar Ln, Metropolis",
+    email: "brooklyn.simmons@example.com",
+    phone: "555-5678",
+    createdAt: "2023-04-05T09:10:00Z",
+    updatedAt: "2023-06-10T13:25:00Z"
+  }
+];
+
+export default function CitizensPage() {
+  const [searchQuery, setSearchQuery] = useState("")
+  const [citizenRegistry] = useState(() => {
+    const registry = new CitizenRegistry();
+    sampleCitizens.forEach(citizen => registry.add(citizen));
+    return registry;
+  })
+  const [citizens, setCitizens] = useState(sampleCitizens)
+  const [newCitizen, setNewCitizen] = useState<Partial<Citizen>>({
+    name: "",
+    age: 0,
+    nationality: "",
+    dateOfBirth: "",
+    address: "",
+    email: "",
+    phone: ""
+  })
+  
+  const handleSearch = () => {
+    if (!searchQuery.trim()) {
+      setCitizens(sampleCitizens)
+      return
+    }
+    
+    const results = citizenRegistry.findByName(searchQuery)
+    setCitizens(results)
+  }
+  
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setNewCitizen(prev => ({
+      ...prev,
+      [name]: name === "age" ? parseInt(value) || 0 : value
+    }))
+  }
+  
+  const handleAddCitizen = () => {
+    // In a real app, we would validate and save to the database
+    alert("Citizen would be added to the system in a real implementation")
+  }
+  
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="text-2xl font-bold tracking-tight">Citizen Registry</h1>
+        <div className="flex items-center gap-2">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button size="sm">
+                <UserPlus className="mr-2 h-4 w-4" />
+                Add Citizen
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[525px]">
+              <DialogHeader>
+                <DialogTitle>Add New Citizen</DialogTitle>
+                <DialogDescription>
+                  Enter the details of the new citizen to add to the registry.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Full Name</Label>
+                    <Input 
+                      id="name" 
+                      name="name" 
+                      value={newCitizen.name} 
+                      onChange={handleInputChange} 
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="age">Age</Label>
+                    <Input 
+                      id="age" 
+                      name="age" 
+                      type="number" 
+                      value={newCitizen.age} 
+                      onChange={handleInputChange} 
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="nationality">Nationality</Label>
+                    <Input 
+                      id="nationality" 
+                      name="nationality" 
+                      value={newCitizen.nationality} 
+                      onChange={handleInputChange} 
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="dateOfBirth">Date of Birth</Label>
+                    <Input 
+                      id="dateOfBirth" 
+                      name="dateOfBirth" 
+                      type="date" 
+                      value={newCitizen.dateOfBirth} 
+                      onChange={handleInputChange} 
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="address">Address</Label>
+                  <Input 
+                    id="address" 
+                    name="address" 
+                    value={newCitizen.address} 
+                    onChange={handleInputChange} 
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input 
+                      id="email" 
+                      name="email" 
+                      type="email" 
+                      value={newCitizen.email} 
+                      onChange={handleInputChange} 
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">Phone</Label>
+                    <Input 
+                      id="phone" 
+                      name="phone" 
+                      value={newCitizen.phone} 
+                      onChange={handleInputChange} 
+                    />
+                  </div>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button type="submit" onClick={handleAddCitizen}>Add Citizen</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+          <Button size="sm" variant="outline">
+            <Upload className="mr-2 h-4 w-4" />
+            Import
+          </Button>
+          <Button size="sm" variant="outline">
+            <Download className="mr-2 h-4 w-4" />
+            Export
+          </Button>
+        </div>
+      </div>
+      
+      <div className="flex items-center space-x-2">
+        <div className="relative flex-1">
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            type="search"
+            placeholder="Search citizens by name..."
+            className="pl-8"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+          />
+        </div>
+        <Button variant="outline" onClick={handleSearch}>
+          <Filter className="mr-2 h-4 w-4" />
+          Filter
+        </Button>
+      </div>
+      
+      <Tabs defaultValue="all">
+        <TabsList>
+          <TabsTrigger value="all">All Citizens</TabsTrigger>
+          <TabsTrigger value="recent">Recently Added</TabsTrigger>
+          <TabsTrigger value="flagged">Flagged</TabsTrigger>
+        </TabsList>
+        <TabsContent value="all" className="space-y-4">
+          <Card>
+            <CardContent className="p-0">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Age</TableHead>
+                    <TableHead>Nationality</TableHead>
+                    <TableHead className="hidden md:table-cell">Email</TableHead>
+                    <TableHead className="hidden md:table-cell">Phone</TableHead>
+                    <TableHead className="hidden lg:table-cell">Created</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {citizens.map((citizen) => (
+                    <TableRow key={citizen.id}>
+                      <TableCell className="font-medium">{citizen.name}</TableCell>
+                      <TableCell>{citizen.age}</TableCell>
+                      <TableCell>{citizen.nationality}</TableCell>
+                      <TableCell className="hidden md:table-cell">{citizen.email}</TableCell>
+                      <TableCell className="hidden md:table-cell">{citizen.phone}</TableCell>
+                      <TableCell className="hidden lg:table-cell">
+                        {new Date(citizen.createdAt).toLocaleDateString()}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="recent">
+          <Card>
+            <CardHeader>
+              <CardTitle>Recently Added</CardTitle>
+              <CardDescription>
+                Citizens added to the registry in the last 30 days.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                This tab would show recently added citizens in a real implementation.
+              </p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="flagged">
+          <Card>
+            <CardHeader>
+              <CardTitle>Flagged Citizens</CardTitle>
+              <CardDescription>
+                Citizens that require additional verification or attention.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                This tab would show flagged citizens in a real implementation.
+              </p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  )
+}

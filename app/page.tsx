@@ -1,103 +1,105 @@
-import Image from "next/image";
+import { 
+  LayoutDashboard,
+  ServerCrash,
+  Shield,
+  UserCheck,
+  AlertCircle,
+  Users
+} from "lucide-react"
 
-export default function Home() {
+import { StatusCard } from "@/components/dashboard/status-card"
+import { StatusUpdates } from "@/components/dashboard/status-updates"
+import { ThreatLevelChart } from "@/components/dashboard/threat-level-chart"
+import { EmergencyStats } from "@/components/dashboard/emergency-stats"
+import { ActiveAgents } from "@/components/dashboard/active-agents"
+
+export default function Dashboard() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold tracking-tight">Security Dashboard</h1>
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-muted-foreground">Last updated: </span>
+          <span className="text-sm font-medium">
+            {new Date().toLocaleTimeString()}
+          </span>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </div>
+      
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <StatusCard
+          title="System Status"
+          value="87%"
+          icon={<LayoutDashboard className="h-4 w-4" />}
+          status="degraded"
+          trend="up"
+          trendValue="2% from yesterday"
+        />
+        <StatusCard
+          title="Infrastructure"
+          value="5 Offline"
+          icon={<ServerCrash className="h-4 w-4" />}
+          status="critical"
+          trend="down"
+          trendValue="3 more than normal"
+        />
+        <StatusCard
+          title="Active Agents"
+          value="28/42"
+          icon={<Shield className="h-4 w-4" />}
+          status="operational"
+          trend="stable"
+          trendValue="Normal capacity"
+        />
+        <StatusCard
+          title="Processed Citizens"
+          value="10,482"
+          icon={<UserCheck className="h-4 w-4" />}
+          status="operational"
+          trend="up"
+          trendValue="1,240 in last 24h"
+        />
+      </div>
+      
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <StatusUpdates />
+        <ThreatLevelChart />
+        <ActiveAgents />
+      </div>
+      
+      <div className="grid gap-4 md:grid-cols-2">
+        <EmergencyStats />
+        <div className="bg-card rounded-lg border shadow-sm">
+          <div className="p-6">
+            <h3 className="text-lg font-medium mb-2">Critical Zones</h3>
+            <div className="relative rounded-md overflow-hidden h-[300px] bg-slate-950/50">
+              <div className="absolute inset-0 bg-[url('https://images.pexels.com/photos/8051988/pexels-photo-8051988.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2')] bg-cover bg-center opacity-30"></div>
+              
+              <div className="absolute top-10 left-28 animate-pulse">
+                <div className="w-12 h-12 rounded-full bg-chart-1/30 flex items-center justify-center">
+                  <div className="w-6 h-6 rounded-full bg-chart-1 animate-ping"></div>
+                </div>
+              </div>
+              
+              <div className="absolute top-40 right-32 animate-pulse delay-300">
+                <div className="w-10 h-10 rounded-full bg-destructive/30 flex items-center justify-center">
+                  <div className="w-5 h-5 rounded-full bg-destructive animate-ping"></div>
+                </div>
+              </div>
+              
+              <div className="absolute bottom-10 left-20 animate-pulse delay-700">
+                <div className="w-8 h-8 rounded-full bg-chart-5/30 flex items-center justify-center">
+                  <div className="w-4 h-4 rounded-full bg-chart-5 animate-ping"></div>
+                </div>
+              </div>
+              
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="font-mono text-xs opacity-80">INTERACTIVE MAP LOADING...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  );
+  )
 }
