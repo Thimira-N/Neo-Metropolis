@@ -10,12 +10,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { cn } from '@/lib/utils'
+// import { cn } from '@/lib/utils'
 
 export function Header() {
   const { setTheme, theme } = useTheme()
   const [mounted, setMounted] = useState(false)
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  // const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   useEffect(() => {
     setMounted(true)
@@ -34,14 +34,14 @@ export function Header() {
           <span className="font-mono text-xs text-primary ml-1 hidden lg:inline-block">CSRS</span>
         </div>
         
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          className="md:hidden mr-2" 
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        >
-          <Menu className="h-5 w-5" />
-        </Button>
+        {/*<Button */}
+        {/*  variant="ghost" */}
+        {/*  size="icon" */}
+        {/*  className="md:hidden mr-2" */}
+        {/*  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}*/}
+        {/*>*/}
+        {/*  <Menu className="h-5 w-5" />*/}
+        {/*</Button>*/}
         
         <div className="flex-1" />
         
