@@ -487,8 +487,8 @@ export default function CitizensPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  This tab would show recently added citizens in a real implementation.
+                <p className="text-sm text-muted-foreground italic">
+                  Coming Soon...
                 </p>
               </CardContent>
             </Card>
@@ -502,8 +502,8 @@ export default function CitizensPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  This tab would show flagged citizens in a real implementation.
+                <p className="text-sm text-muted-foreground italic">
+                  Coming Soon...
                 </p>
               </CardContent>
             </Card>

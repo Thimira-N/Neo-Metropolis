@@ -271,8 +271,8 @@ export default function AnalyticsPage() {
               <CardContent>
                 <div className="h-[400px]">
                   <div className="text-center py-10">
-                    <p className="text-muted-foreground">
-                      Incident analysis data would be displayed here in a real implementation.
+                    <p className="text-muted-foreground italic">
+                      Coming Soon...
                     </p>
                   </div>
                 </div>
@@ -342,8 +342,8 @@ export default function AnalyticsPage() {
               <CardContent>
                 <div className="h-[400px]">
                   <div className="text-center py-10">
-                    <p className="text-muted-foreground">
-                      Resource allocation data would be displayed here in a real implementation.
+                    <p className="text-muted-foreground italic">
+                      Coming Soon...
                     </p>
                   </div>
                 </div>
