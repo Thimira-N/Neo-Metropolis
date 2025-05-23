@@ -1,6 +1,3 @@
-"use client"
-
-import React, { useState, useEffect } from "react"
 import {
   LayoutDashboard,
   ServerCrash,
@@ -17,18 +14,6 @@ import { EmergencyStats } from "@/components/dashboard/emergency-stats"
 import { ActiveAgents } from "@/components/dashboard/active-agents"
 
 export default function Dashboard() {
-  const [currentTime, setCurrentTime] = useState(new Date())
-
-  // Update timestamp every second
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date())
-    }, 1000)
-
-    // Cleanup interval on component unmount
-    return () => clearInterval(timer)
-  }, [])
-
   return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">
@@ -36,7 +21,7 @@ export default function Dashboard() {
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">Last updated: </span>
             <span className="text-sm font-medium">
-            {currentTime.toLocaleTimeString()}
+            {new Date().toLocaleTimeString()}
           </span>
           </div>
         </div>
