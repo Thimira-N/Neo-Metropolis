@@ -12,7 +12,11 @@ import {
   BadgeAlert,
   BarChart4,
   Menu,
-  X
+  X,
+  Code,
+  Github,
+  Linkedin,
+  Mail
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
@@ -83,6 +87,73 @@ export function Sidebar() {
     }
   }, [mobileOpen])
 
+  const NameTag = ({ collapsed = false }: { collapsed?: boolean }) => {
+    if (collapsed) {
+      // Collapsed state - just show avatar with tooltip
+      return (
+          <div className="group relative">
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-purple-600 rounded-full flex items-center justify-center mx-auto cursor-pointer hover:scale-110 transition-all duration-300 shadow-md">
+              <Code size={14} className="text-white group-hover:rotate-12 transition-transform duration-300" />
+            </div>
+
+            {/* Tooltip on hover */}
+            <div className="absolute left-full ml-10 top-1/2 -translate-y-1/2 bg-popover text-popover-foreground px-3 py-2 rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50 border">
+              <div className="text-sm font-medium">Thimira Navodana</div>
+              <div className="text-xs text-muted-foreground">Full Stack Developer</div>
+            </div>
+          </div>
+      );
+    }
+
+    // Expanded state - full name tag
+    return (
+        <div className="space-y-3 items-start flex flex-col">
+          {/* Developer info */}
+          <div className="group cursor-pointer flex items-center gap-2">
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-purple-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-all duration-300 shadow-md">
+              <Code size={14} className="text-white group-hover:rotate-12 transition-transform duration-300" />
+            </div>
+
+            <div className="flex flex-col min-w-0 flex-1">
+            <span className="text-sm font-medium bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent group-hover:from-purple-600 group-hover:to-pink-600 transition-all duration-300 truncate">
+              Thimira Navodana
+            </span>
+              <span className="text-xs text-muted-foreground group-hover:text-foreground transition-colors duration-300">
+              Full Stack Developer
+            </span>
+            </div>
+          </div>
+
+          {/* Social links */}
+          <div className="flex items-center gap-2 justify-center ml-10">
+            <a
+                href="https://github.com/Thimira-N"
+                className="group/social w-7 h-7 bg-accent hover:bg-accent/80 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
+                aria-label="GitHub"
+            >
+              <Github size={12} className="text-muted-foreground group-hover/social:text-foreground transition-colors duration-300" />
+            </a>
+
+            <a
+                href="#"
+                className="group/social w-7 h-7 bg-accent hover:bg-accent/80 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
+                aria-label="LinkedIn"
+            >
+              <Linkedin size={12} className="text-blue-600 group-hover/social:text-blue-800 transition-colors duration-300" />
+            </a>
+
+            <a
+                href="#"
+                className="group/social w-7 h-7 bg-accent hover:bg-accent/80 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
+                aria-label="Email"
+            >
+              <Mail size={12} className="text-green-600 group-hover/social:text-green-800 transition-colors duration-300" />
+            </a>
+          </div>
+        </div>
+    );
+  };
+
   const SidebarContent = ({ isMobile = false }: { isMobile?: boolean }) => (
       <>
         <div className="flex flex-col gap-2 py-4">
@@ -115,6 +186,7 @@ export function Sidebar() {
           ))}
         </div>
 
+        {/* Desktop collapse button and name tag */}
         {!isMobile && (
             <div className="mt-auto p-4">
               <Button
@@ -125,13 +197,24 @@ export function Sidebar() {
               >
                 {!collapsed ? (
                     <>
-                      <span className="mr-2">◀</span>
+                      <span className="mr-2 animate-pulse">⫷</span>
                       <span>Collapse</span>
                     </>
                 ) : (
-                    <span>▶</span>
+                    <span className='animate-pulse'>⫸</span>
                 )}
               </Button>
+              {/*<div className='text-xs mt-5'> <span>Developed By : Thimira Navodana</span> </div>*/}
+              <div className='items-center justify-center mt-4'>
+                <NameTag collapsed={collapsed} />
+              </div>
+            </div>
+        )}
+
+        {/* Mobile name tag */}
+        {isMobile && (
+            <div className="mt-auto p-4 border-t">
+              <NameTag collapsed={false} />
             </div>
         )}
       </>
