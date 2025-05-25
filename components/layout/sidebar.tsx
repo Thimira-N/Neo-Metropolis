@@ -13,6 +13,7 @@ import {
   BarChart4,
   Menu,
   X,
+  MessageCircle,
   Code,
   Github,
   Linkedin,
@@ -125,7 +126,17 @@ export function Sidebar() {
           </div>
 
           {/* Social links */}
-          <div className="flex items-center gap-2 justify-center ml-10">
+          <div className="flex items-center gap-2 justify-center">
+            <a
+                href="https://wa.me/+94716337787?text=Hello%20Thimira!"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group/social w-7 h-7 bg-accent hover:bg-accent/80 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
+                aria-label="WhatsApp"
+            >
+              <MessageCircle size={12} className="text-green-500 group-hover/social:text-green-700 transition-colors duration-300" />
+            </a>
+
             <a
                 href="https://github.com/Thimira-N"
                 className="group/social w-7 h-7 bg-accent hover:bg-accent/80 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
@@ -135,7 +146,7 @@ export function Sidebar() {
             </a>
 
             <a
-                href="#"
+                href="https://www.linkedin.com/in/itz-thimira"
                 className="group/social w-7 h-7 bg-accent hover:bg-accent/80 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
                 aria-label="LinkedIn"
             >
@@ -143,7 +154,7 @@ export function Sidebar() {
             </a>
 
             <a
-                href="#"
+                href="mailto:thimiranavodana2002@gmail.com"
                 className="group/social w-7 h-7 bg-accent hover:bg-accent/80 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
                 aria-label="Email"
             >
