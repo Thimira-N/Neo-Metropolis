@@ -32,7 +32,7 @@ export function Header() {
         <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <div className="flex h-14 items-center px-4">
             <div className="flex items-center mr-4">
-              <Shield className="h-6 w-6 text-primary mr-2" />
+              <Shield className="h-6 w-6 text-primary mr-2 max-sm:ml-12" />
               <span className="font-mono font-bold text-lg hidden md:inline-block">NeoMetropolis</span>
               <span className="font-mono text-xs text-primary ml-1 hidden lg:inline-block">CSRS</span>
             </div>

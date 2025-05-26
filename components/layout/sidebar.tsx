@@ -99,6 +99,7 @@ export function Sidebar() {
 
             {/* Tooltip on hover */}
             <div className="absolute left-full ml-10 top-1/2 -translate-y-1/2 bg-popover text-popover-foreground px-3 py-2 rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50 border">
+              <div className="text-xs text-muted-foreground">Developed by:</div>
               <div className="text-sm font-medium">Thimira Navodana</div>
               <div className="text-xs text-muted-foreground">Full Stack Developer</div>
             </div>
@@ -111,11 +112,14 @@ export function Sidebar() {
         <div className="space-y-3 items-start flex flex-col">
           {/* Developer info */}
           <div className="group cursor-pointer flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-purple-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-all duration-300 shadow-md">
+            <div className="mt-5 w-8 h-8 bg-gradient-to-br from-blue-400 to-purple-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-all duration-300 shadow-md">
               <Code size={14} className="text-white group-hover:rotate-12 transition-transform duration-300" />
             </div>
 
             <div className="flex flex-col min-w-0 flex-1">
+              <span className="mb-1 -ml-10 text-xs text-muted-foreground group-hover:text-foreground transition-colors duration-300">
+              Developed by:
+            </span>
             <span className="text-sm font-medium bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent group-hover:from-purple-600 group-hover:to-pink-600 transition-all duration-300 truncate">
               Thimira Navodana
             </span>
@@ -237,7 +241,7 @@ export function Sidebar() {
         <Button
             variant="ghost"
             size="sm"
-            className="md:hidden fixed top-4 left-4 z-50 bg-background/80 backdrop-blur-sm border"
+            className="md:hidden fixed top-2.5 left-4 z-50 bg-background/80 backdrop-blur-sm border"
             onClick={() => setMobileOpen(!mobileOpen)}
         >
           {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
