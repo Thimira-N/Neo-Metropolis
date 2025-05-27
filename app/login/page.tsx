@@ -18,7 +18,7 @@ const LoginPage = () => {
         await new Promise(resolve => setTimeout(resolve, 1500));
 
         const validEmail = 'admin@neometropolis.com';
-        const validPassword = 'admin';
+        const validPassword = 'admin@123';
 
         if (email === validEmail && password === validPassword) {
             localStorage.setItem('isLoggedIn', 'true');
@@ -228,7 +228,7 @@ const LoginPage = () => {
                                     <div className="flex items-center space-x-2 mb-5">
                                         <div className="w-1 h-5 bg-gradient-to-b from-slate-500 via-indigo-700 to-purple-900 rounded-full animate-ping mr-1 shadow-[0_0_6px_2px_rgba(99,102,241,0.5)]" />
                                         <span className="text-sm text-slate-400 font-mono">
-                                            Email - admin@neometropolis.com <br/> Password (access key) - admin
+                                            Email - admin@neometropolis.com <br/> Password (access key) - admin@123
                                         </span>
                                         <div className="w-1 h-5 bg-gradient-to-b from-slate-500 via-indigo-700 to-purple-900 rounded-full animate-ping ml-1 shadow-[0_0_6px_2px_rgba(99,102,241,0.5)]" />
                                     </div>
