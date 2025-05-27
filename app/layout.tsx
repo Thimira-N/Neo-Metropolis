@@ -8,6 +8,7 @@ import { Toaster } from '@/components/ui/toaster';
 // import AuthGuard from '@/app/login/authguard';
 // import { usePathname } from 'next/navigation';
 import AuthGuardWrapper from "@/app/login/authguardwrapper";
+import { Analytics } from '@vercel/analytics/next';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono' });
@@ -33,6 +34,7 @@ export default function RootLayout({
           disableTransitionOnChange
       >
         <AuthGuardWrapper>{children}</AuthGuardWrapper>
+          <Analytics />
         <Toaster />
       </ThemeProvider>
       </body>
