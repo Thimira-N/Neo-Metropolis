@@ -10,13 +10,13 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { 
-  AlertCircle, 
-  ArrowUp, 
-  ArrowDown, 
+import {
+  AlertCircle,
+  ArrowUp,
+  ArrowDown,
   Clock,
   MapPin,
-  UserCircle
+  UserCircle, Download
 } from "lucide-react"
 import { EmergencyRequest, EmergencyType, EmergencyStatus } from "@/types"
 import { PriorityQueue } from "@/lib/data-structures/PriorityQueue"
@@ -138,6 +138,350 @@ export default function EmergencyPage() {
       setRequests(sampleRequests)
     }
   }, [activeFilter])
+
+    // generate report
+  const generateReport = () => {
+    const now = new Date()
+    const reportDate = now.toLocaleDateString()
+    const reportTime = now.toLocaleTimeString()
+
+    // Calculate statistics
+    const totalRequests = sampleRequests.length
+    const priorityStats = {
+      p1: sampleRequests.filter(r => r.priority === 1).length,
+      p2: sampleRequests.filter(r => r.priority === 2).length,
+      p3: sampleRequests.filter(r => r.priority === 3).length,
+      p4: sampleRequests.filter(r => r.priority === 4).length,
+      p5: sampleRequests.filter(r => r.priority === 5).length,
+    }
+
+    const statusStats = {
+      pending: sampleRequests.filter(r => r.status === "pending").length,
+      inProgress: sampleRequests.filter(r => r.status === "in-progress").length,
+      resolved: sampleRequests.filter(r => r.status === "resolved").length,
+    }
+
+    const typeStats = {
+      cyber: sampleRequests.filter(r => r.type === "cyber").length,
+      physical: sampleRequests.filter(r => r.type === "physical").length,
+      infrastructure: sampleRequests.filter(r => r.type === "infrastructure").length,
+      medical: sampleRequests.filter(r => r.type === "medical").length,
+      fire: sampleRequests.filter(r => r.type === "fire").length,
+    }
+
+    // Calculate average response times
+    const resolvedRequests = sampleRequests.filter(r => r.resolvedTime)
+    const avgResponseTime = resolvedRequests.length > 0
+        ? resolvedRequests.reduce((acc, req) => {
+      const reportTime = new Date(req.reportedTime).getTime()
+      const resolveTime = new Date(req.resolvedTime!).getTime()
+      return acc + (resolveTime - reportTime)
+    }, 0) / resolvedRequests.length / (1000 * 60) // Convert to minutes
+        : 0
+
+    const htmlContent = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Response Report - ${reportDate}</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 700;
+        }
+        .header p {
+            margin: 10px 0 0;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+        }
+        .stat-card h3 {
+            margin: 0 0 15px;
+            color: #667eea;
+            font-size: 1.2em;
+        }
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #333;
+            margin: 10px 0;
+        }
+        .priority-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .priority-item {
+            text-align: center;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        .p1 { background: #ef4444; color: white; }
+        .p2 { background: #f97316; color: white; }
+        .p3 { background: #eab308; color: white; }
+        .p4 { background: #22c55e; color: white; }
+        .p5 { background: #6b7280; color: white; }
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .status-item {
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        .pending { background: #fbbf24; color: white; }
+        .in-progress { background: #3b82f6; color: white; }
+        .resolved { background: #10b981; color: white; }
+        .requests-table {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-top: 30px;
+        }
+        .table-header {
+            background: #667eea;
+            color: white;
+            padding: 20px;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #555;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .badge-cyber { background: #e0f2fe; color: #0277bd; }
+        .badge-physical { background: #fce4ec; color: #c2185b; }
+        .badge-infrastructure { background: #e8f5e8; color: #388e3c; }
+        .badge-medical { background: #fff3e0; color: #f57c00; }
+        .badge-fire { background: #ffebee; color: #d32f2f; }
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+        }
+        .chart-container {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        @media print {
+            body { background: white; }
+            .header { background: #667eea !important; -webkit-print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Emergency Response Report</h1>
+        <p>Generated on ${reportDate} at ${reportTime}</p>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>Total Emergency Calls</h3>
+            <div class="stat-number">${totalRequests}</div>
+            <p>Emergency requests received</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>⏱Average Response Time</h3>
+            <div class="stat-number">${avgResponseTime.toFixed(1)}</div>
+            <p>Minutes (for resolved cases)</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>Resolution Rate</h3>
+            <div class="stat-number">${((statusStats.resolved / totalRequests) * 100).toFixed(1)}%</div>
+            <p>Cases successfully resolved</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>Critical Cases</h3>
+            <div class="stat-number">${priorityStats.p1}</div>
+            <p>Priority 1 emergencies</p>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="chart-container">
+            <h3>Priority Distribution</h3>
+            <div class="priority-grid">
+                <div class="priority-item p1">
+                    <div>P1</div>
+                    <div>${priorityStats.p1}</div>
+                </div>
+                <div class="priority-item p2">
+                    <div>P2</div>
+                    <div>${priorityStats.p2}</div>
+                </div>
+                <div class="priority-item p3">
+                    <div>P3</div>
+                    <div>${priorityStats.p3}</div>
+                </div>
+                <div class="priority-item p4">
+                    <div>P4</div>
+                    <div>${priorityStats.p4}</div>
+                </div>
+                <div class="priority-item p5">
+                    <div>P5</div>
+                    <div>${priorityStats.p5}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h3>Status Overview</h3>
+            <div class="status-grid">
+                <div class="status-item pending">
+                    <div>Pending</div>
+                    <div>${statusStats.pending}</div>
+                </div>
+                <div class="status-item in-progress">
+                    <div>In Progress</div>
+                    <div>${statusStats.inProgress}</div>
+                </div>
+                <div class="status-item resolved">
+                    <div>Resolved</div>
+                    <div>${statusStats.resolved}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="requests-table">
+        <div class="table-header">Detailed Emergency Requests</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Type</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Location</th>
+                    <th>Reported Time</th>
+                    <th>Response Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${sampleRequests.map(req => {
+      const reportTime = new Date(req.reportedTime)
+      const responseTime = req.resolvedTime
+          ? Math.round((new Date(req.resolvedTime).getTime() - reportTime.getTime()) / (1000 * 60))
+          : 'Ongoing'
+
+      return `
+                    <tr>
+                        <td>${req.id}</td>
+                        <td>${req.title}</td>
+                        <td><span class="badge badge-${req.type}">${req.type}</span></td>
+                        <td>P${req.priority}</td>
+                        <td>${req.status}</td>
+                        <td>${req.location.address}</td>
+                        <td>${reportTime.toLocaleString()}</td>
+                        <td>${typeof responseTime === 'number' ? responseTime + ' min' : responseTime}</td>
+                    </tr>
+                  `
+    }).join('')}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="chart-container">
+        <h3>Emergency Types Distribution</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 15px;">
+            ${Object.entries(typeStats)
+        .filter(([_, count]) => count > 0)
+        .map(([type, count]) => `
+                <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 8px;">
+                    <div style="font-size: 2em; margin-bottom: 5px;">${count}</div>
+                    <div style="font-weight: bold; text-transform: capitalize;">${type}</div>
+                </div>
+              `).join('')}
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Emergency Response Management System</p>
+        <p>This report contains ${totalRequests} emergency requests with comprehensive analysis of priority levels, response times, and resolution status.</p>
+        <p><strong>Report Period:</strong> All time • <strong>Generated:</strong> ${reportDate} ${reportTime}</p>
+    </div>
+</body>
+</html>`
+
+    // Create and download the HTML file
+    const blob = new Blob([htmlContent], { type: 'text/html' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `emergency-report-${reportDate.replace(/\//g, '-')}.html`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  }
+
+
   
   const getTypeIcon = (type: EmergencyType) => {
     switch (type) {
@@ -209,6 +553,10 @@ export default function EmergencyPage() {
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-2xl font-bold tracking-tight">Emergency Response</h1>
         <div className="flex items-center gap-2">
+          <Button size="sm" variant="outline" onClick={generateReport}>
+            <Download className="mr-2 h-4 w-4" />
+            Export Report
+          </Button>
           <Button size="sm">
             <AlertCircle className="mr-2 h-4 w-4" />
             New Request
