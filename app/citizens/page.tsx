@@ -130,6 +130,8 @@ export default function CitizensPage() {
   const [isExportDialogOpen, setIsExportDialogOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
   const [nextId, setNextId] = useState(6) // Counter for generating IDs
+  const [editingCitizenId, setEditingCitizenId] = useState<string | null>(null);
+  const [editedData, setEditedData] = useState<Partial<Citizen>>({});
 
   // Prevent hydration mismatch by only rendering after component mounts
   useEffect(() => {
@@ -277,6 +279,29 @@ export default function CitizensPage() {
     setErrors({})  // Clear any remaining errors
     setIsDialogOpen(false)  // Close the dialog
   }
+
+  const handleUpdateCitizen = (id: string) => {
+    const success = citizenRegistry.update(id, editedData);
+    if (success) {
+      setCitizens([...citizenRegistry.getAll()]);
+      setEditingCitizenId(null);
+      setEditedData({});
+    } else {
+      alert("Update failed. ID or Email might already exist.");
+    }
+  };
+
+  const handleDeleteCitizen = (id: string) => {
+    if (confirm("Are you sure you want to delete this citizen?")) {
+      const success = citizenRegistry.remove(id);
+      if (success) {
+        setCitizens([...citizenRegistry.getAll()]);
+      } else {
+        alert("Delete failed. Citizen not found.");
+      }
+    }
+  };
+
 
   // Export functions
   // Premium PDF Export with Enhanced Visual Design
@@ -917,17 +942,130 @@ export default function CitizensPage() {
                   <TableBody>
                     {citizens.map((citizen) => (
                         <TableRow key={citizen.id}>
-                          <TableCell className="font-medium">{citizen.name}</TableCell>
-                          <TableCell>{citizen.age}</TableCell>
-                          <TableCell>{citizen.nationality}</TableCell>
-                          <TableCell className="hidden md:table-cell">{citizen.email}</TableCell>
-                          <TableCell className="hidden md:table-cell">{citizen.phone}</TableCell>
+                          <TableCell className="font-medium">
+                            {editingCitizenId === citizen.id ? (
+                                <input
+                                    className="border px-2 py-1 rounded w-full"
+                                    value={editedData.name ?? ""}
+                                    onChange={(e) =>
+                                        setEditedData({ ...editedData, name: e.target.value })
+                                    }
+                                />
+                            ) : (
+                                citizen.name
+                            )}
+                          </TableCell>
+
+                          <TableCell>
+                            {editingCitizenId === citizen.id ? (
+                                <input
+                                    type="number"
+                                    className="border px-2 py-1 rounded w-full"
+                                    value={editedData.age ?? ""}
+                                    onChange={(e) =>
+                                        setEditedData({ ...editedData, age: Number(e.target.value) })
+                                    }
+                                />
+                            ) : (
+                                citizen.age
+                            )}
+                          </TableCell>
+
+                          <TableCell>
+                            {editingCitizenId === citizen.id ? (
+                                <input
+                                    className="border px-2 py-1 rounded w-full"
+                                    value={editedData.nationality ?? ""}
+                                    onChange={(e) =>
+                                        setEditedData({ ...editedData, nationality: e.target.value })
+                                    }
+                                />
+                            ) : (
+                                citizen.nationality
+                            )}
+                          </TableCell>
+
+                          <TableCell className="hidden md:table-cell">
+                            {editingCitizenId === citizen.id ? (
+                                <input
+                                    className="border px-2 py-1 rounded w-full"
+                                    value={editedData.email ?? ""}
+                                    onChange={(e) =>
+                                        setEditedData({ ...editedData, email: e.target.value })
+                                    }
+                                />
+                            ) : (
+                                citizen.email
+                            )}
+                          </TableCell>
+
+                          <TableCell className="hidden md:table-cell">
+                            {editingCitizenId === citizen.id ? (
+                                <input
+                                    className="border px-2 py-1 rounded w-full"
+                                    value={editedData.phone ?? ""}
+                                    onChange={(e) =>
+                                        setEditedData({ ...editedData, phone: e.target.value })
+                                    }
+                                />
+                            ) : (
+                                citizen.phone
+                            )}
+                          </TableCell>
+
                           <TableCell className="hidden lg:table-cell">
                             {new Date(citizen.createdAt).toLocaleDateString()}
+                          </TableCell>
+
+                          <TableCell className="text-right space-x-2">
+                            {editingCitizenId === citizen.id ? (
+                                <>
+                                  <button
+                                      className="bg-green-500 text-white px-2 py-1 rounded"
+                                      onClick={() => handleUpdateCitizen(citizen.id)}
+                                  >
+                                    Save
+                                  </button>
+                                  <button
+                                      className="bg-gray-400 text-white px-2 py-1 rounded"
+                                      onClick={() => {
+                                        setEditingCitizenId(null);
+                                        setEditedData({});
+                                      }}
+                                  >
+                                    Cancel
+                                  </button>
+                                </>
+                            ) : (
+                                <>
+                                  <button
+                                      className="bg-yellow-500 text-white px-2 py-1 rounded"
+                                      onClick={() => {
+                                        setEditingCitizenId(citizen.id);
+                                        setEditedData({
+                                          name: citizen.name,
+                                          age: citizen.age,
+                                          nationality: citizen.nationality,
+                                          email: citizen.email,
+                                          phone: citizen.phone,
+                                        });
+                                      }}
+                                  >
+                                    Edit
+                                  </button>
+                                  <button
+                                      className="bg-red-500 text-white px-2 py-1 rounded"
+                                      onClick={() => handleDeleteCitizen(citizen.id)}
+                                  >
+                                    Delete
+                                  </button>
+                                </>
+                            )}
                           </TableCell>
                         </TableRow>
                     ))}
                   </TableBody>
+
                 </Table>
               </CardContent>
             </Card>
